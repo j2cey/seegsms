@@ -1,0 +1,146 @@
+<section class="content-header">
+    <h1>Campagnes <small>Gestion des campagnes SMS</small></h1>
+    <ol class="breadcrumb">
+        <li><a ui-sref="app.landing"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li><a ui-sref="app.campaignslist">Liste des Campagnes</a></li>
+        <li class="active">Détails Campagne</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <input type="text" ng-hide="true" ng-model="vm.userData">
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Modifier Campagne</h3>
+                </div>
+                <form class="form-horizontal" name="campaignForm" ng-submit="vm.save(campaignForm.$valid)" novalidate>
+                    <div class="box-body">
+
+                        <div ng-if="vm.alerts" class="alert alert-{{alert.type}}" ng-repeat="alert in vm.alerts">
+                            <h4>{{alert.title}}</h4>
+                            <p>{{alert.msg}}</p>
+                        </div>
+
+                        <input type="text" ng-hide="true" ng-model="vm.campaign.data.user">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Créé par</label>
+                            <div class="col-sm-10">
+                                <input type="text" style="border: none; background-color: transparent" class="form-control" ng-model="vm.campaign.data.user.name" name="user" placeholder="Type" ng-readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': campaignForm.type.$invalid && ( vm.formSubmitted || campaignForm.type.$touched) }">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Type</label>
+                            <div class="col-sm-10">
+                                <input type="text" style="border: none; background-color: transparent" class="form-control" ng-model="vm.campaign.data.type.title" name="type" placeholder="Type" required ng-readonly="true">
+                                <p ng-show="campaignForm.type.$error.required && ( vm.formSubmitted || campaignForm.role.$touched)" class="help-block">Le Type est requis.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error': campaignForm.title.$invalid && ( vm.formSubmitted || campaignForm.title.$touched) }">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Titre</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" ng-model="vm.campaign.data.title" name="title" placeholder="Titre" required>
+                                <p ng-show="campaignForm.title.$error.required && ( vm.formSubmitted || campaignForm.title.$touched)" class="help-block">Le titre est requis.</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Description</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" ng-model="vm.campaign.data.descript" name="descript" placeholder="Description">
+                            </div>
+                        </div>
+
+                        <!--<div class="form-group" ng-class="{ 'has-error': campaignForm.msg.$invalid && ( vm.formSubmitted || campaignForm.msg.$touched) }">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Message</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" ng-model="vm.campaign.data.msg" name="msg" placeholder="Message" required>
+                                <p ng-show="campaignForm.msg.$error.required && ( vm.formSubmitted || campaignForm.msg.$touched)" class="help-block">Le message est requis.</p>
+                            </div>
+                        </div>-->
+
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Message</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" ng-model="vm.campaign.data.msg" name="msg" placeholder="Message" required>
+                            </div>
+                        </div>
+
+                        <!--<div class="form-group" ng-show="vm.campaign.data.plannings">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Planification(s)</label>
+                            <div class="col-sm-10">
+                                <div layout="row" layout-align="center left">
+                                    <div>
+                                        <input mdc-datetime-picker
+                                               date="true"
+                                               class="form-control pull-left"
+                                               time="true"
+                                               type="text"
+                                               name="newplandate"
+                                               format="YYYY-MM-DD HH:mm:ss"
+                                               min-date="vm.mindate"
+                                               ng-model="vm.campaign.newplandate"
+                                               placeholder="Nouvelle planification">
+                                    </div>
+                                    <div>
+                                        <input type="text" class="form-control pull-left" ng-model="vm.campaign.planningmodif" name="planningmodif" placeholder="Planification a modifier" ng-readonly="true" ng-hide="true">
+                                    </div>
+                                </div>
+                                <div layout="row" layout-align="center left">
+                                    <div ng-show="vm.campaign.newplandate && (vm.campaign.planningmodif == null)">
+                                        <input type="file" id="receiversfile" file-model="vm.campaign.receiversfile" accept="text/csv" />
+                                    </div>
+                                </div>
+                                <div layout="row" layout-sm="column" layout-align="center left" layout-wrap>
+                                    <md-button ng-show="vm.campaign.newplandate" class="md-raised" ng-click="vm.planningcancel()">Annuler</md-button>
+                                    <md-button ng-show="vm.campaign.receiversfile && vm.campaign.newplandate && vm.campaign.data.msg" class="md-raised md-primary" ng-click="vm.planningadd(vm.campaign.newplandate,vm.campaign.data.plannings)">Ajouter</md-button>
+                                    <md-button ng-show="vm.campaign.planningmodif && (vm.campaign.planningmodif.plan_status == 0)" class="md-raised md-warn" ng-click="vm.planningmodify(vm.campaign.planningmodif,vm.campaign.newplandate)">Modifier</md-button>
+                                    <md-button ng-show="vm.campaign.planningmodif && vm.campaign.data.msg" class="md-raised md-primary" ng-click="vm.planningduplicate(vm.campaign.planningmodif,vm.campaign.newplandate,vm.campaign.data.plannings)">Dupliquer</md-button>
+                                </div>
+                                <div layout="row" layout-align="center left">
+                                    <div ng-show="vm.campaign.data.plannings.length">
+                                        <div ng-repeat="planning in vm.campaign.data.plannings">
+                                            <div layout="row" layout-align="center left">
+                                                <div>
+                                                    <input type="text" class="form-control pull-left" ng-model="planning.plan_at" name="plandate" placeholder="Date planification" ng-readonly="true" ng-click="vm.planningmodifyaffect(planning)">
+                                                </div>
+                                                <div>
+                                                    <i ng-show="planning.plan_status == 0" class="fa fa-times pull-right" aria-hidden="true" ng-click="vm.planningdrop(planning)"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
+                    </div>
+                    <div class="box-footer">
+                        <a ui-sref="app.campaignslist" class="btn btn-default"><i class="fa fa-angle-double-left"></i> Liste des Campagnes</a>
+                        <button type="submit" class="btn btn-primary pull-right">Modifier</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Liste des Envois</h4>
+                    <div class="box-tools pull-right">
+                        <a ui-sref="app.campaignplanningsadd" class="btn btn-block btn-success btn-xs"><i class="fa fa-plus"></i> Créer Nouvel</a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <table datatable="" width="100%"  class="table table-striped row-border hover"
+                           ng-if="vm.displayTable"
+                           dt-options="vm.dtOptions"
+                           dt-columns="vm.dtColumns"></table>
+                </div>
+                <div class="box-footer">
+                    <!--Footer-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+

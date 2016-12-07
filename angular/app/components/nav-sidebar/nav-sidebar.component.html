@@ -1,0 +1,198 @@
+<aside class="main-sidebar">
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+    <!-- Sidebar user panel -->
+    <input type="text" ng-hide="true" ng-model="vm.myuserdata">
+    <div class="user-panel">
+      <div class="pull-left image">
+        <!--<img src="{{vm.userData.avatar}}" class="img-circle" alt="User Image" onError="this.src='//placeholdit.imgix.net/~text?txtfont=monospace,bold&bg=DD4B39&txtclr=ffffff&txt=A&w=45&h=45&txtsize=16'">-->
+        <img src="{{vm.userData.avatar}}" class="img-circle" alt="User Image" onError="this.src='imgix.png'">
+      </div>
+      <div class="pull-left info">
+        <p>{{vm.userData.name | capitalize}}</p>
+        <!--<a href="javascript:void(0)"><i class="fa fa-circle text-success"></i> Online</a>-->
+      </div>
+    </div>
+    <!-- search form -->
+    <!--<form action="#" method="get" class="sidebar-form">
+      <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Search...">
+            <span class="input-group-btn">
+              <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+              </button>
+            </span>
+      </div>
+    </form>-->
+    <!-- /.search form -->
+    <!-- sidebar menu: : style can be found in sidebar.less -->
+    <ul class="sidebar-menu">
+      <li class="header">Menu Principal</li>
+      <li>
+        <a ui-sref='app.landing'>
+          <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span>
+        </a>
+      </li>
+      <li class="treeview" ng-show="vm.can('manage.users')">
+        <a href="javascript:void(0)">
+          <i class="fa fa-users"></i> <span>Utilisateurs</span> <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li ng-show="vm.can('manage.users')" class="active"><a ui-sref='app.userlist'><i class="fa fa-circle-o"></i> <span>Liste</span></a></li>
+        </ul>
+      </li>
+      <li class="treeview" ng-show="vm.can('manage.roles') || vm.can('manage.permissions') || vm.can('config.campaigns')">
+        <a href="javascript:void(0)">
+          <i class="fa fa-cog"></i> <span>Paramètres</span> <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li ng-show="vm.can('manage.roles')"><a ui-sref='app.userroles'><i class="fa fa-street-view"></i> <span>Roles</span></a></li>
+          <li ng-show="vm.can('manage.permissions')"><a ui-sref='app.userpermissions'><i class="fa fa-thumbs-o-up"></i> <span>Permissions</span></a></li>
+          <li ng-show="vm.can('config.campaigns')"><a ui-sref='app.campaignsparams'><i class="fa fa-circle-thin"></i> <span>Campagnes</span></a></li>
+        </ul>
+      </li>
+      <li class="treeview" ng-show="vm.can('manage.campaigns') || vm.can('validate.campaigns.n1') || vm.can('validate.campaigns.n2')">
+        <a href="javascript:void(0)">
+          <i class="fa fa-newspaper-o"></i>
+          <span>Campagnes</span>
+          <span class="label label-primary pull-right"></span>
+        </a>
+        <ul class="treeview-menu">
+          <li ng-show="vm.can('manage.campaigns')"><a ui-sref="app.campaignslist"><i class="fa fa-circle-o"></i> Liste</a></li>
+          <li ng-show="vm.can('validate.campaigns.n1') || vm.can('validate.campaigns.n2')">
+            <a ui-sref="app.campaignsvalidate({userId: vm.userData.id})"><i class="fa fa-check-square-o"></i>
+              <span>Valider</span>
+              <span class="label label-danger pull-right" ng-show="planningtovalidate">{{planningtovalidate}}</span>
+            </a>
+          </li>
+          <li ng-show="vm.can('validate.campaigns.n1') || vm.can('validate.campaigns.n2')"><a ui-sref="app.campaignssending"><i class="fa fa-send-o"></i> En cours</a></li>
+          <li ng-show="vm.can('validate.campaigns.n1') || vm.can('validate.campaigns.n2')"><a ui-sref="app.comingsoon"><i class="fa fa-line-chart"></i> Stats</a></li>
+        </ul>
+      </li>
+      <li class="treeview" ng-show="vm.can('manage.campaigns') || vm.can('validate.campaigns.n1') || vm.can('validate.campaigns.n2')">
+        <a href="javascript:void(0)">
+          <i class="glyphicon glyphicon-usd"></i>
+          <span>Facturation</span>
+          <span class="label label-primary pull-right"></span>
+        </a>
+        <ul class="treeview-menu">
+          <li ng-show="vm.can('manage.campaigns')"><a ui-sref="app.comingsoon"><i class="fa fa-plus"></i> Editer</a></li>
+          <li ng-show="vm.can('validate.campaigns.n1') || vm.can('validate.campaigns.n2')"><a ui-sref="app.comingsoon"><i class="fa fa-check-square-o"></i> Valider</a></li>
+          <li ng-show="vm.can('validate.campaigns.n1') || vm.can('validate.campaigns.n2')"><a ui-sref="app.comingsoon"><i class="fa fa-line-chart"></i> Stats</a></li>
+        </ul>
+      </li>
+      <li class="treeview" ng-show="vm.can('high.syst.manage') || vm.can('high.syst.manage') || vm.can('high.syst.manage')">
+        <a href="javascript:void(0)">
+          <i class="glyphicon glyphicon-wrench"></i>
+          <span>Administration</span>
+        </a>
+        <ul class="treeview-menu">
+          <li ng-show="vm.can('high.syst.manage')"><a ui-sref="app.tracelists"><i class="fa fa-user-secret"></i> Audit tray</a></li>
+          <li ng-show="vm.can('seegsms.config.access')"><a ui-sref="app.seegsmsconfigedit"><i class="fa fa-circle-o"></i> SEEG SMS - CONFIG.</a></li>
+        </ul>
+      </li>
+
+      <!--
+      <li class="treeview">
+        <a href="javascript:void(0)">
+          <i class="fa fa-files-o"></i>
+          <span>Layout Options</span>
+          <span class="label label-primary pull-right">4</span>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Boxed</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Fixed</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
+        </ul>
+      </li>
+      <li>
+        <a ui-sref="app.widgets">
+          <i class="fa fa-th"></i> <span>Widgets</span>
+          <small class="label pull-right bg-green">new</small>
+        </a>
+      </li>
+      <li class="treeview">
+        <a href="javascript:void(0)">
+          <i class="fa fa-pie-chart"></i>
+          <span>Charts</span>
+          <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> ChartJS</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Morris</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Flot</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+        </ul>
+      </li>
+      <li class="treeview">
+        <a href="javascript:void(0)">
+          <i class="fa fa-laptop"></i>
+          <span>UI Elements</span>
+          <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> General</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Icons</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Buttons</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Sliders</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Timeline</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Modals</a></li>
+        </ul>
+      </li>
+      <li class="treeview">
+        <a href="javascript:void(0)">
+          <i class="fa fa-edit"></i> <span>Forms</span>
+          <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> General Elements</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Editors</a></li>
+        </ul>
+      </li>
+      <li class="treeview">
+        <a href="javascript:void(0)">
+          <i class="fa fa-table"></i> <span>Tables</span>
+          <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Simple tables</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Data tables</a></li>
+        </ul>
+      </li>
+      <li>
+        <a ui-sref="app.comingsoon">
+          <i class="fa fa-calendar"></i> <span>Calendar</span>
+          <small class="label pull-right bg-red">3</small>
+        </a>
+      </li>
+      <li>
+        <a ui-sref="app.comingsoon">
+          <i class="fa fa-envelope"></i> <span>Mailbox</span>
+          <small class="label pull-right bg-yellow">12</small>
+        </a>
+      </li>
+      <li class="header">LABELS</li>
+      <li class="treeview">
+        <a href="javascript:void(0)">
+          <i class="fa fa-folder"></i> <span>Examples</span>
+          <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Invoice</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Profile</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Login</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Register</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> 404 Error</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> 500 Error</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Blank Page</a></li>
+          <li><a ui-sref="app.comingsoon"><i class="fa fa-circle-o"></i> Pace Page</a></li>
+        </ul>
+      </li>
+      -->
+
+    </ul>
+  </section>
+  <!-- /.sidebar -->
+</aside>

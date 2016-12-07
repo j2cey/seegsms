@@ -1,0 +1,51 @@
+<section class="content-header">
+    <h1>Configuration <small>Configuration du Système</small></h1>
+    <ol class="breadcrumb">
+        <li><a ui-sref="app.landing"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="active">Config. Système</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Configuration du Système</h3>
+                </div>
+                <form class="form-horizontal" name="sysconfigForm" ng-submit="vm.save(true)" novalidate>
+                    <div class="box-body">
+
+                        <div ng-if="vm.alerts" class="alert alert-{{alert.type}}" ng-repeat="alert in vm.alerts">
+                            <h4>{{alert.title}}</h4>
+                            <p>{{alert.msg}}</p>
+                        </div>
+						
+						<div ng-repeat="config in vm.seegsmsconfigs.data.seegsmsconfigs">
+
+                            <div layout-gt-sm="row">
+
+                                <h4>{{config.slabel}} : </h4>
+                                <hr>
+                                <div ng-repeat="configsection in config.svalue">
+                                    <div layout-gt-sm="row">
+                                        <md-input-container class="md-block" flex-gt-sm>
+                                            <label>{{configsection.label}}</label>
+                                            <input type="text" class="form-control" ng-model="configsection.value" name="configvalue" required>
+                                        </md-input-container>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="box-footer">
+                        <button ng-show="vm.can('seegsms.config.modify')" type="submit" class="btn btn-danger pull-right">Valider</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+

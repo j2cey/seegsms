@@ -1,0 +1,196 @@
+<section class="content-header">
+    <h1>Campagnes <small>Gestion des campagnes SMS</small></h1>
+    <ol class="breadcrumb">
+        <li><a ui-sref="app.landing"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li><a ui-sref="app.campaignslist">Liste des Campagnes</a></li>
+        <li class="active">Ajouter Campagne</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Créer une nouvelle Campagne</h3>
+                </div>
+
+                <div layout="column" ng-cloak class="md-inline-form">
+                    <form name="campaignForm" novalidate>
+                        <input type="text" ng-hide="true" ng-model="vm.campaign.data.userData">
+                        <input type="text" ng-hide="true" ng-model="vm.campaign.data.type">
+                        <div class="box-body">
+
+                            <div ng-if="vm.alerts" class="alert alert-{{alert.type}}" ng-repeat="alert in vm.alerts">
+                                <h4>{{alert.title}}</h4>
+                                <p>{{alert.msg}}</p>
+                            </div>
+
+                            <!--bar de navigation du formulaire wizard-->
+                            <ul class='nav nav-wizard nav-wizard-backnav'>
+                                <li ng-class="{active:vm.isSet(1)}" >1. Titre & Désignation</li>
+                                <li ng-class="{active:vm.isSet(2)}" >2. {{vm.campaign.campaignfile === true ? "Planification" : "Message & Planification"}}</li>
+                                <li ng-class="{active:vm.isSet(3)}" >3. {{vm.campaign.campaignfile === true ? "Fichier Campagne" : "Destinataires"}}</li>
+                                <li ng-class="{active:vm.isSet(4)}" >4. Enregistrement</li>
+                            </ul>
+
+                            <md-content layout-padding>
+
+                                <!--step 1. Type et Désignation de la campagne-->
+                                <div layout-gt-sm="row" ng-show="vm.step == 1">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <md-select placeholder="Type de campagne" name="type" ng-model="vm.campaign.type" style="min-width: 200px;" ng-change="vm.campaign.data.type=vm.campaign.type.id" required>
+                                            <md-option ng-value="campaigntype" ng-repeat="campaigntype in vm.campaigntypes">{{campaigntype.title}}</md-option>
+                                        </md-select>
+                                        <div ng-messages="campaignForm.type.$error" ng-show="campaignForm.type.$error.required && ( vm.formSubmitted || campaignForm.type.$touched)">
+                                            <div ng-message="required">Selectionnez le type de la campagne!</div>
+                                            <div ng-message="md-maxlength">That's too long!</div>
+                                            <div ng-message="minlength">That's too short!</div>
+                                        </div>
+                                    </md-input-container>
+
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <md-checkbox ng-model="vm.campaign.campaignfile" name="campaignfile" aria-label="Campagne fichier">
+                                            Campagne fichier
+                                        </md-checkbox>
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-sm="row" ng-show="vm.step == 1">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Titre</label>
+                                        <input type="text" class="form-control" ng-model="vm.campaign.data.title" name="title" required>
+                                        <div ng-messages="campaignForm.title.$error" ng-show="campaignForm.title.$error.required && ( vm.formSubmitted || campaignForm.title.$touched)">
+                                            <div ng-message="required">Entrez le titre de la campagne!</div>
+                                            <div ng-message="md-maxlength">That's too long!</div>
+                                            <div ng-message="minlength">That's too short!</div>
+                                        </div>
+                                    </md-input-container>
+
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Description</label>
+                                        <textarea class="form-control" rows="3" ng-model="vm.campaign.data.descript" name="descript"></textarea>
+                                    </md-input-container>
+
+                                </div>
+
+                                <!--step 2. Message et planification de l'envoi-->
+                                <div layout-gt-sm="row" ng-show="vm.step == 2">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <div ng-hide="vm.campaign.campaignfile">
+                                            <label>Message</label>
+                                            <textarea class="form-control" rows="3" ng-model="vm.campaign.data.msg" name="msg" ng-trim="false" ng-maxlength="160" required></textarea>
+                                            <span class="characterLimit">{{160 - vm.campaign.data.msg.length}}</span>
+                                            <div ng-messages="campaignForm.msg.$error" ng-show="campaignForm.msg.$error.required && ( vm.formSubmitted || campaignForm.msg.$touched)">
+                                                <div ng-message="required">Entrez le message de la campagne!</div>
+                                                <div ng-message="md-maxlength">Le message est trop long!</div>
+                                                <div ng-message="minlength">Le message est trop court!</div>
+                                            </div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-sm="row" ng-show="vm.step == 2">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                    A envoyer
+                                        <md-radio-group name="campaignplantype" ng-model="vm.campaign.plantype" ng-change="vm.setPlanDate()">
+                                            <md-radio-button ng-repeat="plantype in vm.plantypes" ng-value="plantype">{{plantype}}</md-radio-button>
+                                        </md-radio-group>
+                                    </md-input-container>
+
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Date et Heure</label>
+                                        <input mdc-datetime-picker
+                                               date="true"
+                                               class="form-control pull-right"
+                                               time="true"
+                                               type="text"
+                                               name="plandate"
+                                               format="YYYY-MM-DD HH:mm:ss"
+                                               min-date="vm.mindate"
+                                               ng-model="vm.campaign.data.plandate"
+                                               ng-disabled="vm.campaign.plantype == 'Maintenant'"
+                                               required>
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-sm="row" ng-show="vm.step == 2">
+                                </div>
+
+                                <!--step 3. Les Destinataires-->
+                                <div layout-gt-sm="row" ng-show="vm.step == 3">
+                                    <md-input-container>
+                                        <label>{{vm.campaign.campaignfile === true ? "Fichier de Campagne" : "Destinataires"}}</label>
+                                        <!--<input type="file" class="form-control" name="desti" required file-model="receiversfile">-->
+                                        <input type="file" id="receiversfile" file-model="vm.campaign.receiversfile" accept="text/csv" />
+                                        <!--<div ng-messages="campaignForm.desti.$error" ng-show="campaignForm.desti.$error.required && ( vm.formSubmitted || campaignForm.desti.$touched)">
+                                            <div ng-message="required">Déterminez les destinataires de la campagne!</div>
+                                            <div ng-message="md-maxlength">That's too long!</div>
+                                            <div ng-message="minlength">That's too short!</div>
+                                        </div>-->
+                                    </md-input-container>
+
+                                </div>
+
+                                <!--<div layout-gt-sm="row" ng-show="vm.step == 3">
+
+                                    <input type="text" id="beat-name" ng-model="vm.beatData.title" required="required" />
+                                    <input type="file" id="image" file-model="vm.image" />
+                                    <input type="file" id="tagged_file" file-model="vm.tagged_file" />
+                                    <input type="file" id="untagged-beat" file-model="vm.untagged_file" />
+                                    <input type="text" class="form-control" id="price1" ng-model="vm.beatData.price1">
+
+                                    <button type="submit" class="btn btn-primary pull-right" ng-click="vm.beatSubmit()">Submit</button>
+
+                                </div>-->
+
+                                <!--step 4. Validation/Enregistrement-->
+                                <div layout-gt-sm="row" ng-show="vm.step == 4">
+
+                                    <div class="box box-solid">
+                                        <div class="box-header with-border">
+                                            <i class="fa fa-check-square-o"></i>
+
+                                            <h3 class="box-title">Validez votre nouvelle Campagne</h3>
+                                        </div>
+
+                                        <div class="box-body">
+                                            <dl class="dl-horizontal">
+                                                <dt>Type</dt>
+                                                <dd>{{ vm.campaign.type.title }}</dd>
+                                                <dt>Titre</dt>
+                                                <dd>{{ vm.campaign.data.title }}</dd>
+                                                <dt ng-show="vm.campaign.data.descript">Description</dt>
+                                                <dd ng-show="vm.campaign.data.descript">{{ vm.campaign.data.descript }}</dd>
+                                                <dt ng-hide="vm.campaign.campaignfile">Message</dt>
+                                                <dd ng-hide="vm.campaign.campaignfile">{{ vm.campaign.data.msg }}</dd>
+                                                <dt>Planifiée le</dt>
+                                                <dd>{{ vm.campaign.data.plandate | date:'dd-MM-yyyy HH:mm:ss' }}</dd>
+                                                <dt>{{vm.campaign.campaignfile === true ? "Fichier de Campagne" : "Fichier Destinataires"}}</dt>
+                                                <dd>{{ vm.campaign.receiversfile.name }}</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div layout-gt-sm="row">
+
+                                </div>
+
+                            </md-content>
+                        </div>
+                        <div class="box-footer">
+                            <a ui-sref="app.campaignslist" class="btn btn-default"><i class="fa fa-angle-double-left"></i> Liste des Campagnes</a>
+
+                            <div class="pull-right">
+                                <button class="btn btn-default pull-left" ng-click="vm.prevStep()" ng-show="vm.step > 1" >Précédent</button>
+                                <button class="btn btn-primary pull-right" ng-click="vm.nextStep()" ng-disabled="vm.checkFormStepErrors(campaignForm,vm.campaign.campaignfile)" ng-hide="vm.step == 4">Suivant</button>
+                                <button type="submit" class="btn btn-primary pull-right" ng-show="vm.step == 4" ng-click="vm.submit()">Valider</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+</section>
